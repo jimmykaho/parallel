@@ -74,74 +74,9 @@ static int totaly;
 
 void initialize_2D_buffer (unsigned int mem_array [], unsigned int *fill_value)
 {
-
-/***********************************************************************
-// Try sets of columns method to defeat hardware prefetching:
-//  Do all rows of column 0 of array then skip "col_interval" columns and do the next column
-//  When that first set of columns is done, do all the rows of column 1, skip col_set columns
-//     and do the next column
-//  Continue until all columns are done
-	int col_max = mem_array_i_max;
-	int row_max = mem_array_j_max;
-
-int iteration_count(0);
-
-	for (int col_set = 0; col_set < col_interval; col_set++)
-	{
-		for (int relative_col = 0; relative_col < col_max; relative_col += col_interval)
-		{
-			int column = relative_col + col_set;
-			for (int row = 0; row < row_max; row++)
-			{
-				mem_array [row*col_max+column] = *fill_value + 2;
-
-//iteration_count++;
-//if (iteration_count < 50)
-//   printf (" iteration_count = %d  array_index = %d \n", iteration_count, (row*col_max+column));
-
-			}
-		}
-	}
-/******************************************************/
-
-/*****************************************
-        // First (slower) method of filling array
-        // Array is NOT filled in consecutive memory address order
-        /**********************************/
-        for (int i = 0; i < mem_array_i_max; i++)
-        {
-/************************/
-// Try to defeat hardware prefetching by varying the stride
-int j(0), iteration_count(0);
-
-do {
-   mem_array [j*mem_array_i_max+i] = *fill_value + 2;
-
-   // Code to give the array accesses a non-uniform stride to defeat hardware prefetch
-   if ((iteration_count % 3) == 0) j=j+3;
-   else j=j+2;
-   iteration_count++;
-} while (j < mem_array_j_max);
-        }
-/************************
-/************************************************
-
-int iteration_count(0);
-               for (int j = 0; j < mem_array_j_max; j++)
-               {
-                        mem_array [j*mem_array_i_max+i] = *fill_value + 2;
-//iteration_count++;
-//if (iteration_count < 50)
-//   printf (" iteration count = %d    array index = %d \n", iteration_count, (j*mem_array_i_max+i));
-               }
-       }
-        /***********************************/
-
-
         // Faster method of filling array
         // The for loops are interchanged
         // Array IS filled in consecutive memory address order
-        /**********************************
         for (int j = 0; j < mem_array_j_max; j++)
         {
                 for (int i = 0; i < mem_array_i_max; i++)
@@ -149,6 +84,5 @@ int iteration_count(0);
                         mem_array [j*mem_array_i_max+i] = *fill_value + 2;
                 }
         }
-        /***********************************/
 }
 
