@@ -9,10 +9,10 @@ pass_tbb: pass_tbb.cpp
 	icc -ltbb -o pass_tbb pass_tbb.cpp -lcrypto
 
 pass_cilk: pass_cilk.c
-	icc -std=c99 -lcilkrts pass_cilk pass_cilk.c -lcrypto
+	icc -std=c99 -o pass_cilk pass_cilk.c -lcilkrts -lcrypto
 
 pass_init: pass_init.c
-	icc -std=c99 -o pass_cilk pass_cilk.c -lcilkrts -lcrypto
+	icc -std=c99 -o pass_init pass_init.c -lcrypto
 
 clean:
 	rm *.o pass_init pass_mp pass_tbb pass_cilk

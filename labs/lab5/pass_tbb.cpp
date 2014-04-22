@@ -60,19 +60,6 @@ int main(int argc, char** argv) {
         printf("Usage: %s <password hash>\n",argv[0]);
         return 1;
     }
-
-    //char passmatch[9];
-    //long currpass=0;
-    //char foundmatch[9];
-
-    //#pragma omp parallel for private(passmatch) shared(foundmatch)
-    //for(; currpass<99999999; ++currpass){
-        //genpass(currpass,passmatch);
-        //if (test(argv[1], passmatch)==0){
-            //strncpy(foundmatch, passmatch, 9);
-        //}
-    //}
-    //printf("found: %s\n",foundmatch);
     
     PassFinder pf(argv[1]);
     parallel_for(tbb::blocked_range<long>(0, 100000000), pf);
