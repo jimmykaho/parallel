@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     long currpass=0;
     char foundmatch[9];
 
-    #pragma omp parallel for private(passmatch) shared(foundmatch)
+    #pragma omp parallel for private(passmatch,currpass) shared(foundmatch)
     for(; currpass<100000000; ++currpass){
         genpass(currpass,passmatch);
         if (test(argv[1], passmatch)==0){
