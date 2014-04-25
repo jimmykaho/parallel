@@ -6,7 +6,7 @@ pass_mp: pass_mp.c
 	icc -std=c99 -openmp -o pass_mp pass_mp.c -lcrypto
 
 pass_tbb: pass_tbb.cpp
-	icc -ltbb -o pass_tbb pass_tbb.cpp -lcrypto
+	icpc -ltbb -o pass_tbb pass_tbb.cpp -lcrypto
 
 pass_cilk: pass_cilk.c
 	icc -std=c99 -o pass_cilk pass_cilk.c -lcilkrts -lcrypto

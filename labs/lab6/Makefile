@@ -3,11 +3,13 @@ all: crypto_serial crypto_mp crypto_tbb crypto_cilk
 default: all
 
 crypto_mp: openmp.c key.c
-	icc -std=c99 -o crypto_openmp openmp.c key.c -fopenmp
+	icc -std=c99 -o crypto_mp openmp.c key.c -fopenmp
 
-crypto_tbb:
+crypto_tbb: tbb.cpp key.c
+	icpc -o tbb tbb.cpp key.c -ltbb
 
-crypto_cilk:
+crypto_cilk: cilk.cpp key.c
+	icpc -o crypto_cilk cilk.cpp key.c -lcilkrts
 
 crypto_serial: serial.c key.c
 	icc -std=c99 -o crypto_serial serial.c key.c

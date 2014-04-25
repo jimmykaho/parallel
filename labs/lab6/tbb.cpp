@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <tbb/tbb.h>
 
 // utility function: given a list of keys, a list of files to pull them from, 
 // and the number of keys -> pull the keys out of the files, allocating memory 
@@ -23,22 +24,11 @@ void getKeys(xorKey* keyList, char** fileList, int numKeys)
 void encode(char* plainText, char* cypherText, xorKey* keyList, int ptextlen, int numKeys) {
   int keyLoop=0;
   int charLoop=0;
-
-  #pragma omp parallel for private(charLoop)
   for(charLoop=0;charLoop<ptextlen;charLoop++) {
     char cipherChar=plainText[charLoop]; 
-/*
     for(keyLoop=0;keyLoop<numKeys;keyLoop++) {
        cipherChar=cipherChar ^ getBit(&(keyList[keyLoop]),charLoop);
     }
-    cypherText[charLoop]=cipherChar;
-*/
-
-    #pragma omp parallel reduction(^:cipherChar)
-    for(keyLoop=0;keyLoop<numKeys;keyLoop++) {
-      cipherChar=cipherChar ^ getBit(&(keyList[keyLoop]),charLoop);
-    }
-
     cypherText[charLoop]=cipherChar;
   }
 }
