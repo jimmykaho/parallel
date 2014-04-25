@@ -6,7 +6,7 @@ crypto_mp: openmp.c key.c
 	icc -std=c99 -o crypto_mp openmp.c key.c -fopenmp
 
 crypto_tbb: tbb.cpp key.c
-	icpc -o tbb tbb.cpp key.c -ltbb
+	icpc -std=c++11 -o crypto_tbb tbb.cpp key.c -ltbb
 
 crypto_cilk: cilk.cpp key.c
 	icpc -o crypto_cilk cilk.cpp key.c -lcilkrts
