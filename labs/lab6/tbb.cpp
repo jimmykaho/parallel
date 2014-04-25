@@ -21,48 +21,34 @@ void getKeys(xorKey* keyList, char** fileList, int numKeys)
   }
 }
 
-/*
-//Given text, a list of keys, the length of the text, and the number of keys, encodes the text
-void encode(char* plainText, char* cypherText, xorKey* keyList, int ptextlen, int numKeys) {
-  int keyLoop=0;
-  int charLoop=0;
-  for(charLoop=0;charLoop<ptextlen;charLoop++) {
-    char cipherChar=plainText[charLoop]; 
-    for(keyLoop=0;keyLoop<numKeys;keyLoop++) {
-       cipherChar=cipherChar ^ getBit(&(keyList[keyLoop]),charLoop);
-    }
-    cypherText[charLoop]=cipherChar;
-  }
-}
-*/
-
 //Given text, a list of keys, the length of the text, and the number of keys, encodes the text
 void encode(char* plainText, char* cypherText, xorKey* keyList, int ptextlen, int numKeys) {
  
   tbb::parallel_for (
     tbb::blocked_range<int> ( 0, ptextlen ),
-// use the [=] lambda expression to capture any referenced variable by making a copy
+    // use the [=] lambda expression to capture any referenced variable by making a copy
     [=](tbb::blocked_range<int> r) {
-        for( int charLoop = r.begin(); charLoop < r.end(); ++charLoop ) {
-            char cipherChar = plainText[charLoop];
-            char res = tbb::parallel_reduce(
-                tbb::blocked_range<int>( 0, numKeys ),
-                char(0),
-// use the [=] lambda expression to capture any referenced variable by making a copy
-                [=]( const tbb::blocked_range<int>& r, char value )->char {
-                    for( int reduer_index=r.begin(); reduer_index!=r.end(); ++reduer_index )
-                        value = value ^ getBit( &(keyList[reduer_index]), charLoop );
-                    return value;
-                },
+      for( int charLoop = r.begin(); charLoop < r.end(); ++charLoop ) {
+        char cipherChar = plainText[charLoop];
+        char res = tbb::parallel_reduce(
+          tbb::blocked_range<int>( 0, numKeys ),
+          char(0),
+          // use the [=] lambda expression to capture any referenced variable by making a copy
+          [=]( const tbb::blocked_range<int>& r, char value )->char {
+            for( int reduer_index=r.begin(); reduer_index!=r.end(); ++reduer_index ){
+              value = value ^ getBit( &(keyList[reduer_index]), charLoop );
+            }
+            return value;
+          },
 //                std::bit_xor<char>()
-                // try this
-                [=](char x, char y)->char{
-                    return x^y;
-                }
-            );
-            cipherChar = cipherChar ^ res;
-            cypherText[charLoop]=cipherChar;
-        }
+          // try this
+          [=](char x, char y)->char{
+            return x^y;
+          }
+        );
+      cipherChar = cipherChar ^ res;
+      cypherText[charLoop]=cipherChar;
+    }
   });
 }
 
