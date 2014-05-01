@@ -5,3 +5,6 @@ I gather the value in matrix B (B[i][j]) and turns it into the transpose of B (B
 This data reorganization takes advantage of the data locality;
 By accessing "horizontally" across one array instead reading "vertically" across multiple arrays,
 it increases data locality and minimizes the access time.
+
+The serialized version finishes order of 5000 multiplication in 77.187895 seconds at 3238.849820 mflops.
+The reorganized parallelized version finishes order of 5000 multiplication in 43.292500 seconds at 5774.672317 mflops.
