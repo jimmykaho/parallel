@@ -1,5 +1,3 @@
-This should be replaced by a description of the data reorganization you chose to implement and its effectiveness. Your description can be short, but should address the change made and why you expected a performance improvement. You should also include performance metrics to support wether runtime improved or not.
-
 I parallelize the most outer for loop in the matrix_multiply function.
 I gather the value in matrix B (B[i][j]) and turns it into the transpose of B (B[j][i]).
 This data reorganization takes advantage of the data locality;
