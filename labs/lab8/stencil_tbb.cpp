@@ -158,7 +158,7 @@ void apply_stencil(const int radius, const double stddev, const int rows, const 
 	double kernel[dim*dim];
 	gaussian_kernel(dim, dim, stddev, kernel);
 
-	Stencil_class stencilClass;
+	Stencil_class Stencil_class(radius, rows, cols, dim, in, out, kernel);
 }
 
 int main( int argc, char* argv[] ) {
