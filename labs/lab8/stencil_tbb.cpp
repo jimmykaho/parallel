@@ -18,8 +18,11 @@ struct pixel {
 
 class Stencil_class{
 	public:
-		int radius,rows,cols; 
-		pixel * in,out;
+		int radius;
+		int rows; 
+		int cols; 
+		pixel * in; 
+		pixel * out;
 		int dim;
 		double * kernel; 
 		Stencil_class(){}
