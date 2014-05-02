@@ -121,7 +121,7 @@ void prewitt_stencil(const int rows, const int cols, pixel * const in, pixel * c
 				out[out_offset].blue = root;
 			}
 		}
-	}
+	});
 }
 
 void apply_stencil(const int radius, const double stddev, const int rows, const int cols, pixel * const in, pixel * const out) {
