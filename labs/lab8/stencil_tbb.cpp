@@ -15,13 +15,13 @@ struct pixel {
 	pixel(double r, double g, double b) : red(r), green(g), blue(b) {};
 };
 
-class PixelStencil{
+class Stencil_class{
 	public:
 		int radius,rows,cols; 
 		pixel * in,out;
 		int dim;
 		double * kernel; 
-		PixelStencil(){}
+		Stencil_class(){}
 		void operator()( const tbb::blocked_range<int>& r ) const {  
 			for (int i=r.begin(); i!=r.end(); i++ ){  
 				for(int j = 0; j < cols; ++j) {
