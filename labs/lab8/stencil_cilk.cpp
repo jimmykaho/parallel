@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <cilk/cilk.h>
 
 using namespace cv;
 
