@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include <omp.h>
 
 using namespace cv;
 
@@ -92,8 +91,7 @@ void prewitt_stencil(const int rows, const int cols, pixel * const in, pixel * c
 	prewittX_kernel(3, 3, kernelX);
 	prewittY_kernel(3, 3, kernelY);
 
-	#pragma omp parallel for
-	for(int i = 0; i < rows; ++i) {
+	cilk_for(int i = 0; i < rows; ++i) {
 		for(int j = 0; j < cols; ++j) {
 			const int out_offset = i + (j*rows);
 			// For each pixel, do the stencil
@@ -124,8 +122,7 @@ void apply_stencil(const int radius, const double stddev, const int rows, const 
 	const int dim = radius*2+1;
 	double kernel[dim*dim];
 	gaussian_kernel(dim, dim, stddev, kernel);
-	#pragma omp parallel for
-	for(int i = 0; i < rows; ++i) {
+	cilk_for(int i = 0; i < rows; ++i) {
 		for(int j = 0; j < cols; ++j) {
 			const int out_offset = i + (j*rows);
 			// For each pixel, do the stencil
