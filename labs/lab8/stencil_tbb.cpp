@@ -22,7 +22,7 @@ class Stencil_class{
 		pixel * in;
 		pixel * out;
 		double * kernel;
-		Stencil_class()(const int _radius, const int _rows, const int _cols, const int _dim, pixel * const _in, pixel * const _out, double * _kernel) : radius(_radius), rows(_rows), cols(_cols), dim(_dim), in(_in), out(_out), kernel(_kernel){}
+		Stencil_class(const int _radius, const int _rows, const int _cols, const int _dim, pixel * const _in, pixel * const _out, double * _kernel) : radius(_radius), rows(_rows), cols(_cols), dim(_dim), in(_in), out(_out), kernel(_kernel){}
 		void operator()( const tbb::blocked_range<int>& r ) const {
 			for (int i=r.begin(); i!=r.end(); i++ ){
 				for(int j = 0; j < cols; ++j) {
