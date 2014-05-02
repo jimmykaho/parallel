@@ -141,8 +141,8 @@ void apply_stencil(const int radius, const double stddev, const int rows, const 
 					for(int y = j - radius, ky = 0; y <= j + radius; ++y, ++ky) {
 						if(x >= 0 && x < rows && y >= 0 && y < cols) {
 							const int in_offset = x + (y*rows);
-							const int k_offset = kx + (ky*dim);out[out_offset].red;
-							//out[out_offset].red   += kernel[k_offset] * in[in_offset].red;
+							const int k_offset = kx + (ky*dim);
+							out[out_offset].red   += kernel[k_offset];// * in[in_offset].red;
 							//out[out_offset].green += kernel[k_offset] * in[in_offset].green;
 							//out[out_offset].blue  += kernel[k_offset] * in[in_offset].blue;
 						}
