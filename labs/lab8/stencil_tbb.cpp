@@ -18,16 +18,13 @@ struct pixel {
 
 class Stencil_class{
 	public:
-		int radius;
-		int rows; 
-		int cols; 
-		pixel * in; 
+		int radius,rows,cols,dim;
+		pixel * in;
 		pixel * out;
-		int dim;
-		double * kernel; 
-		Stencil_class(){}
-		void operator()( const tbb::blocked_range<int>& r ) const {  
-			for (int i=r.begin(); i!=r.end(); i++ ){  
+		double * kernel;
+		Stencil_class()(const int _radius, const int _rows, const int _cols, const int _dim, pixel * const _in, pixel * const _out, double * _kernel) : radius(_radius), rows(_rows), cols(_cols), dim(_dim), in(_in), out(_out), kernel(_kernel){}
+		void operator()( const tbb::blocked_range<int>& r ) const {
+			for (int i=r.begin(); i!=r.end(); i++ ){
 				for(int j = 0; j < cols; ++j) {
 					const int out_offset = i + (j*rows);
 					// For each pixel, do the stencil
@@ -161,28 +158,7 @@ void apply_stencil(const int radius, const double stddev, const int rows, const 
 	double kernel[dim*dim];
 	gaussian_kernel(dim, dim, stddev, kernel);
 
-	tbb::parallel_for (
-	tbb::blocked_range<int> ( 0, rows ),
-	// use the [=] lambda expression to capture any referenced variable by making a copy
-	[=](tbb::blocked_range<int> r) {
-		for(int i = r.begin(); i !=r.end(); ++i) {
-			for(int j = 0; j < cols; ++j) {
-				const int out_offset = i + (j*rows);
-				// For each pixel, do the stencil
-				for(int x = i - radius, kx = 0; x <= i + radius; ++x, ++kx) {
-					for(int y = j - radius, ky = 0; y <= j + radius; ++y, ++ky) {
-						if(x >= 0 && x < rows && y >= 0 && y < cols) {
-							const int in_offset = x + (y*rows);
-							const int k_offset = kx + (ky*dim);
-							/*out[out_offset].red   += kernel[k_offset] * in[in_offset].red;
-							out[out_offset].green += kernel[k_offset] * in[in_offset].green;
-							out[out_offset].blue  += kernel[k_offset] * in[in_offset].blue;*/
-						}
-					}
-				}
-			}
-		}
-	});
+	Stencil_class stencilClass;
 }
 
 int main( int argc, char* argv[] ) {
