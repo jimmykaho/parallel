@@ -22,7 +22,7 @@ class PixelStencil{
 		int dim;
 		double * kernel; 
 		PixelStencil(){}
-		void operator()( const blocked_range<int>& r ) const {  
+		void operator()( const tbb::blocked_range<int>& r ) const {  
 			for (int i=r.begin(); i!=r.end(); i++ ){  
 				for(int j = 0; j < cols; ++j) {
 					const int out_offset = i + (j*rows);
