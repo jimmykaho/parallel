@@ -96,7 +96,7 @@ void prewitt_stencil(const int rows, const int cols, pixel * const in, pixel * c
 	tbb::blocked_range<int> ( 0, rows ),
 	// use the [=] lambda expression to capture any referenced variable by making a copy
 	[=](tbb::blocked_range<int> r) {
-		for(int i = 0; i < rows; ++i) {
+		for(int i = r.begin(); i !=r.end(); ++i) {
 			for(int j = 0; j < cols; ++j) {
 				const int out_offset = i + (j*rows);
 				// For each pixel, do the stencil
