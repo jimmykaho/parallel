@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include <cilk/cilk.h>
+#include <tbb/tbb.h>
 
 using namespace cv;
 
@@ -92,29 +92,34 @@ void prewitt_stencil(const int rows, const int cols, pixel * const in, pixel * c
 	prewittX_kernel(3, 3, kernelX);
 	prewittY_kernel(3, 3, kernelY);
 
-	cilk_for(int i = 0; i < rows; ++i) {
-		for(int j = 0; j < cols; ++j) {
-			const int out_offset = i + (j*rows);
-			// For each pixel, do the stencil
-			double intenseX = 0;
-			double intenseY = 0;
-
-			for(int x = i - radius, kx = 0; x <= i + radius; ++x, ++kx) {
-				for(int y = j - radius, ky = 0; y <= j + radius; ++y, ++ky) {
-					if(x >= 0 && x < rows && y >= 0 && y < cols) {
-						const int in_offset = x + (y*rows);
-						const int k_offset = kx + (ky*dim);
-						
-						intenseX += kernelX[k_offset] * (in[in_offset].red + in[in_offset].green + in[in_offset].blue) / 3;
-						intenseY += kernelY[k_offset] * (in[in_offset].red + in[in_offset].green + in[in_offset].blue) / 3;
+	tbb::parallel_for (
+	tbb::blocked_range<int> ( 0, rows ),
+	// use the [=] lambda expression to capture any referenced variable by making a copy
+	[=](tbb::blocked_range<int> r) {
+		for(int i = 0; i < rows; ++i) {
+			for(int j = 0; j < cols; ++j) {
+				const int out_offset = i + (j*rows);
+				// For each pixel, do the stencil
+				double intenseX = 0;
+				double intenseY = 0;
+	
+				for(int x = i - radius, kx = 0; x <= i + radius; ++x, ++kx) {
+					for(int y = j - radius, ky = 0; y <= j + radius; ++y, ++ky) {
+						if(x >= 0 && x < rows && y >= 0 && y < cols) {
+							const int in_offset = x + (y*rows);
+							const int k_offset = kx + (ky*dim);
+							
+							intenseX += kernelX[k_offset] * (in[in_offset].red + in[in_offset].green + in[in_offset].blue) / 3;
+							intenseY += kernelY[k_offset] * (in[in_offset].red + in[in_offset].green + in[in_offset].blue) / 3;
+						}
 					}
 				}
+				
+				double root = sqrt(intenseX * intenseX + intenseY * intenseY);
+				out[out_offset].red = root;
+				out[out_offset].green = root;
+				out[out_offset].blue = root;
 			}
-			
-			double root = sqrt(intenseX * intenseX + intenseY * intenseY);
-			out[out_offset].red = root;
-			out[out_offset].green = root;
-			out[out_offset].blue = root;
 		}
 	}
 }
