@@ -15,6 +15,34 @@ struct pixel {
 	pixel(double r, double g, double b) : red(r), green(g), blue(b) {};
 };
 
+class PixelStencil{
+	public:
+		int radius,rows,cols; 
+		pixel * in,out;
+		int dim;
+		double * kernel; 
+		PixelStencil(){}
+		void operator()( const blocked_range<int>& r ) const {  
+			for (int i=r.begin(); i!=r.end(); i++ ){  
+				for(int j = 0; j < cols; ++j) {
+					const int out_offset = i + (j*rows);
+					// For each pixel, do the stencil
+					for(int x = i - radius, kx = 0; x <= i + radius; ++x, ++kx) {
+						for(int y = j - radius, ky = 0; y <= j + radius; ++y, ++ky) {
+							if(x >= 0 && x < rows && y >= 0 && y < cols) {
+								const int in_offset = x + (y*rows);
+								const int k_offset = kx + (ky*dim);
+								out[out_offset].red   += kernel[k_offset] * in[in_offset].red;
+								out[out_offset].green += kernel[k_offset] * in[in_offset].green;
+								out[out_offset].blue  += kernel[k_offset] * in[in_offset].blue;
+							}
+						}
+					}
+				}
+			}  
+		}  
+};
+
 /*
  * The Prewitt kernels can be applied after a blur to help highlight edges
  * The input image must be gray scale/intensities:
@@ -142,9 +170,9 @@ void apply_stencil(const int radius, const double stddev, const int rows, const 
 						if(x >= 0 && x < rows && y >= 0 && y < cols) {
 							const int in_offset = x + (y*rows);
 							const int k_offset = kx + (ky*dim);
-							out[out_offset].red   += kernel[k_offset];// * in[in_offset].red;
-							//out[out_offset].green += kernel[k_offset] * in[in_offset].green;
-							//out[out_offset].blue  += kernel[k_offset] * in[in_offset].blue;
+							/*out[out_offset].red   += kernel[k_offset] * in[in_offset].red;
+							out[out_offset].green += kernel[k_offset] * in[in_offset].green;
+							out[out_offset].blue  += kernel[k_offset] * in[in_offset].blue;*/
 						}
 					}
 				}
