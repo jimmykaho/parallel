@@ -128,24 +128,29 @@ void apply_stencil(const int radius, const double stddev, const int rows, const 
 	const int dim = radius*2+1;
 	double kernel[dim*dim];
 	gaussian_kernel(dim, dim, stddev, kernel);
-	// TODO:
-	for(int i = 0; i < rows; ++i) {
-		for(int j = 0; j < cols; ++j) {
-			const int out_offset = i + (j*rows);
-			// For each pixel, do the stencil
-			for(int x = i - radius, kx = 0; x <= i + radius; ++x, ++kx) {
-				for(int y = j - radius, ky = 0; y <= j + radius; ++y, ++ky) {
-					if(x >= 0 && x < rows && y >= 0 && y < cols) {
-						const int in_offset = x + (y*rows);
-						const int k_offset = kx + (ky*dim);
-						out[out_offset].red   += kernel[k_offset] * in[in_offset].red;
-						out[out_offset].green += kernel[k_offset] * in[in_offset].green;
-						out[out_offset].blue  += kernel[k_offset] * in[in_offset].blue;
+
+	tbb::parallel_for (
+	tbb::blocked_range<int> ( 0, rows ),
+	// use the [=] lambda expression to capture any referenced variable by making a copy
+	[=](tbb::blocked_range<int> r) {
+		for(int i = r.begin(); i !=r.end(); ++i) {
+			for(int j = 0; j < cols; ++j) {
+				const int out_offset = i + (j*rows);
+				// For each pixel, do the stencil
+				for(int x = i - radius, kx = 0; x <= i + radius; ++x, ++kx) {
+					for(int y = j - radius, ky = 0; y <= j + radius; ++y, ++ky) {
+						if(x >= 0 && x < rows && y >= 0 && y < cols) {
+							const int in_offset = x + (y*rows);
+							const int k_offset = kx + (ky*dim);
+							out[out_offset].red   += kernel[k_offset] * in[in_offset].red;
+							out[out_offset].green += kernel[k_offset] * in[in_offset].green;
+							out[out_offset].blue  += kernel[k_offset] * in[in_offset].blue;
+						}
 					}
 				}
 			}
 		}
-	}
+	});
 }
 
 int main( int argc, char* argv[] ) {
