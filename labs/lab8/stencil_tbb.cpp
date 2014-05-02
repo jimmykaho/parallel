@@ -6,6 +6,7 @@
 #include <tbb/tbb.h>
 
 using namespace cv;
+using namespace tbb;
 
 struct pixel {
 	double red;
