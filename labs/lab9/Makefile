@@ -1,4 +1,4 @@
-all: starhole_serial starhole_cilk starhole_openmp
+all: starhole_serial starhole_openmp starhole_cilk
 
 starhole_serial: starhole_serial.cpp
 	icpc -g -std=c++11 -o starhole_serial starhole_serial.cpp -Wall -Wextra -lopencv_core -lopencv_highgui -lm
