@@ -13,7 +13,10 @@ class Init {
    void operator() ( const blocked_range<int>& range ) const {
       for ( int i = range.begin(); i!=range.end(); ++i){
          output[i]=i;
+<<<<<<< HEAD
+=======
          *((int*)(0))=2;
+>>>>>>> abb6756a14665795871fd636505b59b2e098acb9
       }
    }
 };

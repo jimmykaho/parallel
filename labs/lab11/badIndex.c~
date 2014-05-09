@@ -4,8 +4,11 @@
 #define NUMVECTORS 5
 #define NUMELEMENTS 8 
 #define THREADS 4
+<<<<<<< HEAD
 
+=======
 //simple sum scan
+>>>>>>> abb6756a14665795871fd636505b59b2e098acb9
 void scan(int* scanMe){
    int i=0;
    for(i=0;i<NUMELEMENTS-1;i++)
@@ -13,8 +16,10 @@ void scan(int* scanMe){
       scanMe[i+1]+=scanMe[i];
    }  
 }
-
+<<<<<<< HEAD
+=======
 //scan a few vectors
+>>>>>>> abb6756a14665795871fd636505b59b2e098acb9
 void scanGroup(int** vectorGroup)
 {
    int i=0;

@@ -6,7 +6,14 @@ badIndex: badIndex.c
 	icc -g -o badIndex badIndex.c -fopenmp
 
 tbbNotQuiteRight: tbbNotQuiteRight.cpp
+<<<<<<< HEAD
 	icc -g -o tbbNotQuiteRight tbbNotQuiteRight.cpp -ltbb
 
 clean:
+	rm tbb badIndex tbbNotQuiteRight *.o 2>/dev/null
+=======
+	icpc -g -o tbb tbbNotQuiteRight.cpp -ltbb
+
+clean:
 	rm tbb badIndex *.o 2>/dev/null
+>>>>>>> abb6756a14665795871fd636505b59b2e098acb9
