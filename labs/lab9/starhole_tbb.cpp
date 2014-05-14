@@ -7,6 +7,7 @@
 #include <tbb/tbb.h>
 
 using namespace cv;
+using namespace tbb;
 
 #include "starhole_common.cpp"
 
@@ -28,7 +29,11 @@ static int sim_steps;
 int walker(long int seed, int x, int y, int stepsremaining) {
     struct drand48_data seedbuf;
     srand48_r(seed, &seedbuf);
-    int particles = 1;
+    
+    atomic<int> particles = 1;
+    task_group fork;
+    
+    
     for( ; stepsremaining>0 ; stepsremaining-- ) {
         
         // Does the Carter particle split? If so, start the walk for the new one
@@ -36,7 +41,12 @@ int walker(long int seed, int x, int y, int stepsremaining) {
             //printf("spliting!\n");
             long int newseed;
             lrand48_r(&seedbuf, &newseed);
-            particles += walker(seed + newseed, x, y, stepsremaining-1);
+            
+            int newParticles = 0;
+            fork.run([=, $newParticles]{ newParticles =  walker(seed + newseed, x, y, stepsremaining-1); });
+            fork.wait();
+            
+            particles.fetch_and_add(newParticles);
         }
         
         // Make the particle walk?
@@ -45,6 +55,8 @@ int walker(long int seed, int x, int y, int stepsremaining) {
     
     // record the final location
     outArea[toOffset(x,y,radius)] += 1;
+    
+    fork.wait();
     
     return particles;
 }
