@@ -38,7 +38,7 @@ int walker(long int seed, int x, int y, int stepsremaining) {
             long int newseed;
             lrand48_r(&seedbuf, &newseed);
             cilk_spawn [&]{
-                particles += cilk_spawn(walker(seed + newseed, x, y, stepsremaining-1));
+                particles += walker(seed + newseed, x, y, stepsremaining-1);
             }
         }
         
