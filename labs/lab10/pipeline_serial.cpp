@@ -6,7 +6,6 @@
 #include <tbb/pipeline.h>
 
 using namespace cv;
-using namespace tbb;
 
 //----Method Declarations
 static void ungarbleVideo(char**,int);
@@ -103,18 +102,18 @@ void ungarbleVideo(char** imgList, int numImgs)
 {
 	int imgNum=0;
 	
-	parallel_pipeline(
+	tbb::parallel_pipeline(
 		/*max_number_of_live_token=*/4,
-		make_filter<void,Mat>(
-			filter::serial_in_order,
-			[&](flow_control& fc) -> Mat{
+		tbb::make_filter<void,Mat>(
+			tbb::filter::serial_in_order,
+			[&](tbb::flow_control& fc) -> Mat{
 				Mat frame = imread(imgList[imgNum],CV_LOAD_IMAGE_COLOR);
 				if (imgNum == numImgs){ fc.stop(); }
 				return frame;
 			}
 		) &
-		make_filter<Mat,Mat>(
-			filter::parallel,
+		tbb::make_filter<Mat,Mat>(
+			tbb::filter::parallel,
 			[](Mat frame) -> Mat{
 				Mat brightFrameReturn, contrastFrameReturn;
 				Mat pixelsFrameReturn, rotateFrameReturn;
@@ -126,8 +125,8 @@ void ungarbleVideo(char** imgList, int numImgs)
 				return rotateFrameReturn;
 			}
 		) &
-		make_filter<Mat,void>(
-			filter::serial_in_order,
+		tbb::make_filter<Mat,void>(
+			tbb::filter::serial_in_order,
 			[](Mat frame){
 				imshow("Nuclear Fusion",frame);
 				waitKey(1);
