@@ -29,6 +29,8 @@ int walker(long int seed, int x, int y, int stepsremaining) {
     struct drand48_data seedbuf;
     srand48_r(seed, &seedbuf);
     int particles = 1;
+    int newPartNum;
+    
     for( ; stepsremaining>0 ; stepsremaining-- ) {
         
         // Does the Carter particle split? If so, start the walk for the new one
@@ -36,11 +38,14 @@ int walker(long int seed, int x, int y, int stepsremaining) {
             //printf("spliting!\n");
             long int newseed;
             lrand48_r(&seedbuf, &newseed);
-            particles += walker(seed + newseed, x, y, stepsremaining-1);
+            newPartNum = cilk_spawn(walker(seed + newseed, x, y, stepsremaining-1));
         }
         
         // Make the particle walk?
         updateLocation(&seedbuf, area, &x, &y, radius);
+        
+        cilk_sync;
+        particles += newPartNum;
     }
     
     // record the final location
