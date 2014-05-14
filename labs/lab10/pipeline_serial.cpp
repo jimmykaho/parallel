@@ -103,7 +103,7 @@ void ungarbleVideo(char** imgList, int numImgs)
 	int imgNum=0;
 	
 	tbb::parallel_pipeline(
-		/*max_number_of_live_token=*/4,
+		/*max_number_of_live_token=*/(size_t)4,
 		tbb::make_filter<void,Mat>(
 			tbb::filter::serial_in_order,
 			[&](tbb::flow_control& fc) -> Mat{
