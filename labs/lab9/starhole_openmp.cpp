@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <stdlib.h>
 #include <stdio.h>
+#include <omp.h>
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
