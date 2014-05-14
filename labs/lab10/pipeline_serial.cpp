@@ -129,7 +129,7 @@ void ungarbleVideo(char** imgList, int numImgs)
 		make_filter<void,Mat>(
 			filter::serial_in_order,
 			[](Mat frame){
-				imshow("Nuclear Fusion",pixelsFrameReturn);
+				imshow("Nuclear Fusion",frame);
 				waitKey(1);
 			}
 		)
