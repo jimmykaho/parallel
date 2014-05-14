@@ -2,6 +2,8 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 #include <string>
+#include <tbb/tbb.h>
+#include <tbb/pipeline.h>
 
 using namespace cv;
 
