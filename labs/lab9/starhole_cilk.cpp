@@ -29,7 +29,7 @@ static int sim_steps;
 int walker(long int seed, int x, int y, int stepsremaining) {
     struct drand48_data seedbuf;
     srand48_r(seed, &seedbuf);
-    reducer_opadd<unsigned int> accum(1);
+    cilk::reducer_opadd<int> accum(1);
     int particles = 1;
     
     for( ; stepsremaining>0 ; stepsremaining-- ) {
