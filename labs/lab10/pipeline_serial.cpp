@@ -131,6 +131,7 @@ void ungarbleVideo(char** imgList, int numImgs)
 			[](Mat frame){
 				imshow("Nuclear Fusion",frame);
 				waitKey(1);
+				return;
 			}
 		)
 	);
