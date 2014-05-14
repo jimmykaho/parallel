@@ -37,8 +37,9 @@ int walker(long int seed, int x, int y, int stepsremaining) {
             //printf("spliting!\n");
             long int newseed;
             lrand48_r(&seedbuf, &newseed);
-            int newPartNum = cilk_spawn(walker(seed + newseed, x, y, stepsremaining-1));
-            particles+=newPartNum;
+            cilk_spawn [&]{
+                particles += cilk_spawn(walker(seed + newseed, x, y, stepsremaining-1));
+            }
         }
         
         // Make the particle walk?
