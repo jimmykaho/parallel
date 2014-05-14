@@ -134,7 +134,6 @@ void ungarbleVideo(char** imgList, int numImgs)
 			}
 		)
 	);
-   }
 }
 
 
