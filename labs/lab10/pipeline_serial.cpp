@@ -115,7 +115,7 @@ void ungarbleVideo(char** imgList, int numImgs)
 		) &
 		make_filter<Mat,Mat>(
 			filter::parallel,
-			[&](Mat frame) -> Mat{
+			[](Mat frame) -> Mat{
 				Mat brightFrameReturn, contrastFrameReturn;
 				Mat pixelsFrameReturn, rotateFrameReturn;
 				
@@ -126,7 +126,7 @@ void ungarbleVideo(char** imgList, int numImgs)
 				return rotateFrameReturn;
 			}
 		) &
-		make_filter<void,Mat>(
+		make_filter<Mat,void>(
 			filter::serial_in_order,
 			[](Mat frame){
 				imshow("Nuclear Fusion",frame);
