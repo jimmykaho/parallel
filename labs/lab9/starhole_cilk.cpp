@@ -39,18 +39,17 @@ int walker(long int seed, int x, int y, int stepsremaining) {
             lrand48_r(&seedbuf, &newseed);
             cilk_spawn [&]{
                 particles += walker(seed + newseed, x, y, stepsremaining-1);
-            }
+            }();
         }
         
         // Make the particle walk?
         updateLocation(&seedbuf, area, &x, &y, radius);
         
     }
-    
-    cilk_sync;
-        
     // record the final location
     outArea[toOffset(x,y,radius)] += 1;
+    
+    cilk_sync;
     
     return particles;
 }
