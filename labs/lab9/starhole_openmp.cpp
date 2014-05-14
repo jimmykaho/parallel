@@ -28,8 +28,6 @@ int walker(long int seed, int x, int y, int stepsremaining) {
     struct drand48_data seedbuf;
     srand48_r(seed, &seedbuf);
     int particles = 0;
-    #pragma omp parallel reduction(+: particles)
-    {
         #pragma omp single
         {
             for( ; stepsremaining>0 ; stepsremaining-- ) {
@@ -49,7 +47,6 @@ int walker(long int seed, int x, int y, int stepsremaining) {
                 updateLocation(&seedbuf, area, &x, &y, radius);
             }
         }
-    }
     
     // record the final location
     outArea[toOffset(x,y,radius)] += 1;
