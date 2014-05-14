@@ -100,41 +100,34 @@ void debug()
 }
 void ungarbleVideo(char** imgList, int numImgs) 
 {
-	int imgNum=0;
-	size_t ntoken = 4;
-	
-	tbb::parallel_pipeline(
-		/*max_number_of_live_token=*/ntoken,
-		tbb::make_filter<void,Mat>(
-			tbb::filter::serial_in_order,
-			[&](tbb::flow_control& fc) -> Mat{
-				Mat frame = imread(imgList[imgNum],CV_LOAD_IMAGE_COLOR);
-				if (imgNum == numImgs){ fc.stop(); }
-				return frame;
-			}
-		) &
-		tbb::make_filter<Mat,Mat>(
-			tbb::filter::parallel,
-			[](Mat frame) -> Mat{
-				Mat brightFrameReturn, contrastFrameReturn;
-				Mat pixelsFrameReturn, rotateFrameReturn;
-				
-				decreaseBrightnessFilter(frame, brightFrameReturn);
-				decreaseContrastFilter(brightFrameReturn, contrastFrameReturn);
-				rearrangePixelsFilter(contrastFrameReturn, pixelsFrameReturn);
-				rotateMatFilter(pixelsFrameReturn, rotateFrameReturn);
-				return rotateFrameReturn;
-			}
-		) &
-		tbb::make_filter<Mat,void>(
-			tbb::filter::serial_in_order,
-			[](Mat frame){
-				imshow("Nuclear Fusion",frame);
-				waitKey(1);
-				return;
-			}
-		)
-	);
+    int imgNum = 0;
+    size_t ntoken = 4;
+    
+    tbb::parallel_pipeline (
+        ntoken,
+        tbb::make_filter<void,Mat>(
+            tbb::filter::serial_in_order,
+            [&]( tbb::flow_control& fc ) -> Mat {
+                Mat frame = imread(imgList[imgNum++],CV_LOAD_IMAGE_COLOR);
+                if (imgNum == numImgs) { fc.stop(); }
+                return frame;
+            }
+        ) &
+        tbb::make_filter<Mat,Mat> (
+            tbb::filter::parallel,
+            [](Mat frame) -> Mat { 
+                Mat filter_frame;
+                decreaseBrightnessFilter(frame, filter_frame);
+                return filter_frame;
+            }
+        ) &
+        tbb::make_filter<Mat,void> (
+            tbb::filter::serial_in_order,
+            [](Mat frame) {
+              imshow("Nuclear Fusion",frame);
+              waitKey(1);
+              return;
+            }
+        )
+    );
 }
-
-
