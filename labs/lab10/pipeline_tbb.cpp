@@ -116,9 +116,33 @@ void ungarbleVideo(char** imgList, int numImgs)
         tbb::make_filter<Mat,Mat> (
             tbb::filter::parallel,
             [](Mat frame) -> Mat { 
-                Mat filter_frame;
-                decreaseBrightnessFilter(frame, filter_frame);
-                return filter_frame;
+                Mat output_frame;
+                decreaseBrightnessFilter(frame, output_frame);
+                return output_frame;
+            }
+        ) &
+        tbb::make_filter<Mat,Mat> (
+            tbb::filter::parallel,
+            [](Mat frame) -> Mat { 
+                Mat output_frame;
+                decreaseContrastFilter(frame, output_frame);
+                return output_frame;
+            }
+        ) &
+        tbb::make_filter<Mat,Mat> (
+            tbb::filter::parallel,
+            [](Mat frame) -> Mat { 
+                Mat output_frame;
+                rearrangePixelsFilter(frame, output_frame);
+                return output_frame;
+            }
+        ) &
+        tbb::make_filter<Mat,Mat> (
+            tbb::filter::parallel,
+            [](Mat frame) -> Mat { 
+                Mat output_frame;
+                rotateMatFilter(frame, output_frame);
+                return output_frame;
             }
         ) &
         tbb::make_filter<Mat,void> (
