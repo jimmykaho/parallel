@@ -38,14 +38,13 @@ int walker(long int seed, int x, int y, int stepsremaining) {
             //printf("spliting!\n");
             long int newseed;
             lrand48_r(&seedbuf, &newseed);
-            newPartNum = cilk_spawn(walker(seed + newseed, x, y, stepsremaining-1));
+            particles += cilk_spawn(walker(seed + newseed, x, y, stepsremaining-1));
         }
         
         // Make the particle walk?
         updateLocation(&seedbuf, area, &x, &y, radius);
         
         cilk_sync;
-        particles += newPartNum;
     }
     
     // record the final location
