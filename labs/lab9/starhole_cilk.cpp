@@ -44,9 +44,10 @@ int walker(long int seed, int x, int y, int stepsremaining) {
         // Make the particle walk?
         updateLocation(&seedbuf, area, &x, &y, radius);
         
-        cilk_sync;
     }
     
+    cilk_sync;
+        
     // record the final location
     outArea[toOffset(x,y,radius)] += 1;
     
