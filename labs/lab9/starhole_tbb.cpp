@@ -43,7 +43,7 @@ int walker(long int seed, int x, int y, int stepsremaining) {
             lrand48_r(&seedbuf, &newseed);
             
             int newParticles = 0;
-            fork.run([=, $newParticles]{ newParticles =  walker(seed + newseed, x, y, stepsremaining-1); });
+            fork.run([=, &newParticles]{ newParticles =  walker(seed + newseed, x, y, stepsremaining-1); });
             fork.wait();
             
             particles.fetch_and_add(newParticles);
