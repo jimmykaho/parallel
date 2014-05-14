@@ -29,7 +29,6 @@ int walker(long int seed, int x, int y, int stepsremaining) {
     struct drand48_data seedbuf;
     srand48_r(seed, &seedbuf);
     int particles = 1;
-    int newPartNum;
     
     for( ; stepsremaining>0 ; stepsremaining-- ) {
         
@@ -38,7 +37,8 @@ int walker(long int seed, int x, int y, int stepsremaining) {
             //printf("spliting!\n");
             long int newseed;
             lrand48_r(&seedbuf, &newseed);
-            particles += cilk_spawn(walker(seed + newseed, x, y, stepsremaining-1));
+            int newPartNum = cilk_spawn(walker(seed + newseed, x, y, stepsremaining-1));
+            particles+=newPartNum;
         }
         
         // Make the particle walk?
