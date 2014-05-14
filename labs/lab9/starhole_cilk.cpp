@@ -53,7 +53,7 @@ int walker(long int seed, int x, int y, int stepsremaining) {
     
     cilk_sync;
     
-    particles = accum.get_value()
+    particles = accum.get_value();
     
     return particles;
 }
